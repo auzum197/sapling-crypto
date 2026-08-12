@@ -1360,10 +1360,7 @@ pub(crate) mod testing {
                     let mut builder = Builder::new(zip212_enforcement, BundleType::DEFAULT, anchor);
                     let mut rng = StdRng::from_seed(rng_seed);
 
-                    for (note, path) in spendable_notes
-                        .into_iter()
-                        .zip(commitment_trees.into_iter())
-                    {
+                    for (note, path) in spendable_notes.into_iter().zip(commitment_trees) {
                         builder.add_spend(dfvk.fvk().clone(), note, path).unwrap();
                     }
 
