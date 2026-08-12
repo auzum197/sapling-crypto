@@ -45,7 +45,7 @@ where
             let c = bits.next().unwrap_or(&boolean_false);
 
             let tmp = lookup3_xy_with_conditional_negation(
-                cs.namespace(|| format!("segment {}, window {}", segment_i, window_i)),
+                cs.namespace(|| format!("segment {segment_i}, window {window_i}")),
                 &[a.clone(), b.clone(), c.clone()],
                 &segment_windows[0],
             )?;
@@ -59,7 +59,7 @@ where
                 Some(ref mut segment_result) => {
                     *segment_result = tmp.add(
                         cs.namespace(|| {
-                            format!("addition of segment {}, window {}", segment_i, window_i)
+                            format!("addition of segment {segment_i}, window {window_i}")
                         }),
                         segment_result,
                     )?;
@@ -83,13 +83,13 @@ where
 
         // Convert this segment into twisted Edwards form.
         let segment_result = segment_result.into_edwards(
-            cs.namespace(|| format!("conversion of segment {} into edwards", segment_i)),
+            cs.namespace(|| format!("conversion of segment {segment_i} into edwards")),
         )?;
 
         match edwards_result {
             Some(ref mut edwards_result) => {
                 *edwards_result = segment_result.add(
-                    cs.namespace(|| format!("addition of segment {} to accumulator", segment_i)),
+                    cs.namespace(|| format!("addition of segment {segment_i} to accumulator")),
                     edwards_result,
                 )?;
             }
@@ -162,14 +162,16 @@ mod test {
         {
             let mut cs = TestConstraintSystem::new();
 
-            let input: Vec<bool> = (0..n_bits).map(|_| rng.next_u32() % 2 != 0).collect();
+            let input: Vec<bool> = (0..n_bits)
+                .map(|_| !rng.next_u32().is_multiple_of(2))
+                .collect();
 
             let input_bools: Vec<Boolean> = input
                 .iter()
                 .enumerate()
                 .map(|(i, b)| {
                     Boolean::from(
-                        AllocatedBit::alloc(cs.namespace(|| format!("input {}", i)), Some(*b))
+                        AllocatedBit::alloc(cs.namespace(|| format!("input {i}")), Some(*b))
                             .unwrap(),
                     )
                 })
@@ -206,7 +208,9 @@ mod test {
 
         for length in 0..751 {
             for _ in 0..5 {
-                let input: Vec<bool> = (0..length).map(|_| rng.next_u32() % 2 != 0).collect();
+                let input: Vec<bool> = (0..length)
+                    .map(|_| !rng.next_u32().is_multiple_of(2))
+                    .collect();
 
                 let mut cs = TestConstraintSystem::new();
 
@@ -215,7 +219,7 @@ mod test {
                     .enumerate()
                     .map(|(i, b)| {
                         Boolean::from(
-                            AllocatedBit::alloc(cs.namespace(|| format!("input {}", i)), Some(*b))
+                            AllocatedBit::alloc(cs.namespace(|| format!("input {i}")), Some(*b))
                                 .unwrap(),
                         )
                     })
@@ -232,7 +236,7 @@ mod test {
 
                 let expected = jubjub::ExtendedPoint::from(pedersen_hash::pedersen_hash(
                     Personalization::MerkleTree(1),
-                    input.clone().into_iter(),
+                    input.clone(),
                 ))
                 .to_affine();
 
@@ -242,7 +246,7 @@ mod test {
                 // Test against the output of a different personalization
                 let unexpected = jubjub::ExtendedPoint::from(pedersen_hash::pedersen_hash(
                     Personalization::MerkleTree(0),
-                    input.into_iter(),
+                    input,
                 ))
                 .to_affine();
 
@@ -268,7 +272,9 @@ mod test {
             "2112827187110048608327330788910224944044097981650120385961435904443901436107",
         ];
         for length in 300..302 {
-            let input: Vec<bool> = (0..length).map(|_| rng.next_u32() % 2 != 0).collect();
+            let input: Vec<bool> = (0..length)
+                .map(|_| !rng.next_u32().is_multiple_of(2))
+                .collect();
 
             let mut cs = TestConstraintSystem::new();
 
@@ -277,7 +283,7 @@ mod test {
                 .enumerate()
                 .map(|(i, b)| {
                     Boolean::from(
-                        AllocatedBit::alloc(cs.namespace(|| format!("input {}", i)), Some(*b))
+                        AllocatedBit::alloc(cs.namespace(|| format!("input {i}")), Some(*b))
                             .unwrap(),
                     )
                 })

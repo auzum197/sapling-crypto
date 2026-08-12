@@ -8,7 +8,7 @@ use pprof::criterion::{Output, PProfProfiler};
 fn bench_pedersen_hash(c: &mut Criterion) {
     let rng = &mut OsRng;
     let bits = (0..510)
-        .map(|_| (rng.next_u32() % 2) != 0)
+        .map(|_| !rng.next_u32().is_multiple_of(2))
         .collect::<Vec<_>>();
     let personalization = Personalization::MerkleTree(31);
 

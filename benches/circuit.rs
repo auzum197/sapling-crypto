@@ -65,8 +65,13 @@ fn criterion_benchmark(c: &mut Criterion) {
         };
 
         let commitment_randomness = jubjub::Fr::random(&mut rng);
-        let auth_path =
-            vec![Some((bls12_381::Scalar::random(&mut rng), rng.next_u32() % 2 != 0)); TREE_DEPTH];
+        let auth_path = vec![
+            Some((
+                bls12_381::Scalar::random(&mut rng),
+                !rng.next_u32().is_multiple_of(2),
+            ));
+            TREE_DEPTH
+        ];
         let ar = jubjub::Fr::random(&mut rng);
         let anchor = bls12_381::Scalar::random(&mut rng);
 

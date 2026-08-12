@@ -332,7 +332,7 @@ impl Circuit<bls12_381::Scalar> for Spend {
 
         // Ascend the merkle tree authentication path
         for (i, e) in self.auth_path.into_iter().enumerate() {
-            let cs = &mut cs.namespace(|| format!("merkle tree hash {}", i));
+            let cs = &mut cs.namespace(|| format!("merkle tree hash {i}"));
 
             // Determines if the current subtree is the "right" leaf at this
             // depth of the tree.
@@ -679,8 +679,13 @@ fn test_input_circuit_with_bls12_381() {
         }
 
         let commitment_randomness = jubjub::Fr::random(&mut rng);
-        let auth_path =
-            vec![Some((bls12_381::Scalar::random(&mut rng), rng.next_u32() % 2 != 0)); tree_depth];
+        let auth_path = vec![
+            Some((
+                bls12_381::Scalar::random(&mut rng),
+                !rng.next_u32().is_multiple_of(2),
+            ));
+            tree_depth
+        ];
         let ar = jubjub::Fr::random(&mut rng);
 
         {
@@ -854,8 +859,13 @@ fn test_input_circuit_with_bls12_381_external_test_vectors() {
         }
 
         let commitment_randomness = jubjub::Fr::random(&mut rng);
-        let auth_path =
-            vec![Some((bls12_381::Scalar::random(&mut rng), rng.next_u32() % 2 != 0)); tree_depth];
+        let auth_path = vec![
+            Some((
+                bls12_381::Scalar::random(&mut rng),
+                !rng.next_u32().is_multiple_of(2),
+            ));
+            tree_depth
+        ];
         let ar = jubjub::Fr::random(&mut rng);
 
         {
