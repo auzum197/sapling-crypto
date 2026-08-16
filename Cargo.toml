@@ -12,12 +12,11 @@
 [package]
 edition = "2021"
 rust-version = "1.88"
-name = "sapling-crypto"
+name = "zakura-sapling-crypto"
 version = "0.7.0"
 authors = [
-    "Sean Bowe <sean@electriccoin.co>",
-    "Jack Grigg <jack@electriccoin.co>",
-    "Kris Nuttycombe <kris@electriccoin.co>",
+    "Dev Ojha <ValarDragon@users.noreply.github.com>",
+    "Sean Bowe <ewillbefull@gmail.com>",
 ]
 build = false
 autolib = false
@@ -25,11 +24,17 @@ autobins = false
 autoexamples = false
 autotests = false
 autobenches = false
+exclude = [
+    "/.gitignore",
+    "/deny.toml",
+    "/rust-toolchain.toml",
+    "/supply-chain",
+]
 description = "Cryptographic library for Zcash Sapling"
-homepage = "https://github.com/zcash/sapling-crypto"
+homepage = "https://github.com/zakura-core/libraries"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/zcash/sapling-crypto"
+repository = "https://github.com/zakura-core/libraries"
 resolver = "3"
 
 [package.metadata.docs.rs]
@@ -167,6 +172,7 @@ default-features = false
 path = "../redjubjub"
 version = "0.8"
 default-features = false
+package = "zakura-redjubjub"
 
 [dependencies.subtle]
 version = "2.6"

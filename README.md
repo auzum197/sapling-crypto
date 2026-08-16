@@ -1,6 +1,19 @@
-# sapling-crypto
+# zakura-sapling-crypto
 
-This repository contains an implementation of Zcash's "Sapling" cryptography.
+`zakura-sapling-crypto` is the [Zakura](https://github.com/zakura-core/zakura)
+fork of the upstream
+[`sapling-crypto`](https://crates.io/crates/sapling-crypto) crate from
+[zcash/sapling-crypto](https://github.com/zcash/sapling-crypto), maintained in
+[zakura-core/libraries](https://github.com/zakura-core/libraries). The library
+target keeps the upstream name, so `use sapling_crypto::…` paths are unchanged.
+Use it as a drop-in replacement by renaming the dependency:
+
+```toml
+[dependencies]
+sapling-crypto = { package = "zakura-sapling-crypto", version = "0.7" }
+```
+
+This crate contains an implementation of Zcash's "Sapling" cryptography.
 
 ## `no_std` compatibility
 
