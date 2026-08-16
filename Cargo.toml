@@ -12,7 +12,7 @@
 [package]
 edition = "2021"
 rust-version = "1.88"
-name = "sapling-crypto"
+name = "zakura-sapling-crypto"
 version = "0.7.0"
 authors = [
     "Sean Bowe <sean@electriccoin.co>",
@@ -167,6 +167,7 @@ default-features = false
 path = "../redjubjub"
 version = "0.8"
 default-features = false
+package = "zakura-redjubjub"
 
 [dependencies.subtle]
 version = "2.6"
