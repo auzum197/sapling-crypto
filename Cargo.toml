@@ -24,6 +24,12 @@ autobins = false
 autoexamples = false
 autotests = false
 autobenches = false
+exclude = [
+    "/.gitignore",
+    "/deny.toml",
+    "/rust-toolchain.toml",
+    "/supply-chain",
+]
 description = "Cryptographic library for Zcash Sapling"
 homepage = "https://github.com/zakura-core/libraries"
 readme = "README.md"
