@@ -29,7 +29,7 @@ description = "Cryptographic library for Zcash Sapling"
 homepage = "https://github.com/zcash/sapling-crypto"
 readme = "README.md"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/zcash/sapling-crypto"
+repository = "https://github.com/zakura-core/libraries"
 resolver = "3"
 
 [package.metadata.docs.rs]
