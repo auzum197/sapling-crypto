@@ -13,7 +13,7 @@
 edition = "2021"
 rust-version = "1.88"
 name = "zakura-sapling-crypto"
-version = "0.7.0"
+version = "1.0.0-rc.1"
 authors = [
     "Dev Ojha <ValarDragon@users.noreply.github.com>",
     "Sean Bowe <ewillbefull@gmail.com>",
@@ -170,7 +170,7 @@ default-features = false
 
 [dependencies.redjubjub]
 path = "../redjubjub"
-version = "0.8"
+version = "1.0.0-rc.1"
 default-features = false
 package = "zakura-redjubjub"
 
