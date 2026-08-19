@@ -1,12 +1,12 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-use rand_core::{OsRng, RngCore};
+use rand::Rng;
 use sapling_crypto::pedersen_hash::{pedersen_hash, Personalization};
 
 #[cfg(unix)]
 use pprof::criterion::{Output, PProfProfiler};
 
 fn bench_pedersen_hash(c: &mut Criterion) {
-    let rng = &mut OsRng;
+    let rng = &mut rand::rng();
     let bits = (0..510)
         .map(|_| !rng.next_u32().is_multiple_of(2))
         .collect::<Vec<_>>();
