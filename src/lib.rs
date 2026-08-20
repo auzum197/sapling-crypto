@@ -38,6 +38,7 @@ pub mod pczt;
 pub mod pedersen_hash;
 #[cfg(feature = "circuit")]
 pub mod prover;
+mod rng_compat;
 mod spec;
 mod tree;
 pub mod util;

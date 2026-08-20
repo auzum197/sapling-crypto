@@ -8,6 +8,8 @@ and this project adheres to Rust's notion of
 
 ## [Unreleased]
 
+- Updated to `ff 0.14`, `group 0.14`, `rand 0.10`, and the Zakura Groth16 and
+  Jubjub forks.
 - Forked from upstream `sapling-crypto` and renamed to `zakura-sapling-crypto`; this changelog starts
   fresh for the Zakura fork's initial release.
 - Restarted the version lineage at 1.0.0, leaving behind the inherited upstream
