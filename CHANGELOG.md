@@ -8,6 +8,7 @@ and this project adheres to Rust's notion of
 
 ## [Unreleased]
 
+- Prepared the `1.0.0-rc.4` release.
 - Replaced `lazy_static` with `once_cell` plus an exactly-once
   initialization wrapper for the lazily-built constant tables.
 - The public lazily-initialized constants are now accessor functions:
