@@ -4,23 +4,23 @@ use alloc::vec::Vec;
 use core::fmt;
 use corez::io;
 
-use group::{ff::PrimeField, Curve};
+use group::{Curve, ff::PrimeField};
 
-use bellman::{groth16, Circuit, ConstraintSystem, SynthesisError};
+use bellman::{Circuit, ConstraintSystem, SynthesisError, groth16};
 use bls12_381::Bls12;
 
+use bellman::gadgets::Assignment;
 use bellman::gadgets::blake2s;
 use bellman::gadgets::boolean;
 use bellman::gadgets::multipack;
 use bellman::gadgets::num;
-use bellman::gadgets::Assignment;
 
 use self::constants::{
     note_commitment_randomness_generator, nullifier_position_generator,
     proof_generation_key_generator, spending_key_generator, value_commitment_randomness_generator,
     value_commitment_value_generator,
 };
-use crate::{value::NoteValue, PaymentAddress, ProofGenerationKey};
+use crate::{PaymentAddress, ProofGenerationKey, value::NoteValue};
 
 #[cfg(test)]
 use group::ff::PrimeFieldBits;
@@ -635,7 +635,7 @@ pub struct PreparedOutputVerifyingKey(pub(crate) groth16::PreparedVerifyingKey<B
 #[test]
 fn test_input_circuit_with_bls12_381() {
     use crate::{
-        keys::SpendValidatingKey, pedersen_hash, Diversifier, Note, ProofGenerationKey, Rseed,
+        Diversifier, Note, ProofGenerationKey, Rseed, keys::SpendValidatingKey, pedersen_hash,
     };
 
     use bellman::gadgets::test::*;
@@ -789,7 +789,7 @@ fn test_input_circuit_with_bls12_381() {
 #[test]
 fn test_input_circuit_with_bls12_381_external_test_vectors() {
     use crate::{
-        keys::SpendValidatingKey, pedersen_hash, Diversifier, Note, ProofGenerationKey, Rseed,
+        Diversifier, Note, ProofGenerationKey, Rseed, keys::SpendValidatingKey, pedersen_hash,
     };
 
     use bellman::gadgets::test::*;
@@ -976,7 +976,7 @@ fn test_input_circuit_with_bls12_381_external_test_vectors() {
 
 #[test]
 fn test_output_circuit_with_bls12_381() {
-    use crate::{keys::SpendValidatingKey, Diversifier, ProofGenerationKey, Rseed};
+    use crate::{Diversifier, ProofGenerationKey, Rseed, keys::SpendValidatingKey};
 
     use bellman::gadgets::test::*;
     use group::ff::Field;

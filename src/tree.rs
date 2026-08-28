@@ -1,6 +1,6 @@
 use crate::once::OnceTable;
 use bitvec::{order::Lsb0, view::AsBits};
-use group::{ff::PrimeField, Curve};
+use group::{Curve, ff::PrimeField};
 use incrementalmerkletree::{Hashable, Level};
 use subtle::CtOption;
 
@@ -9,7 +9,7 @@ use core::fmt;
 
 use super::{
     note::ExtractedNoteCommitment,
-    pedersen_hash::{pedersen_hash, Personalization},
+    pedersen_hash::{Personalization, pedersen_hash},
 };
 
 pub const NOTE_COMMITMENT_TREE_DEPTH: u8 = 32;
@@ -185,8 +185,8 @@ pub(super) mod testing {
     use ff::Field;
     use proptest::prelude::*;
     use rand::{
-        distr::{Distribution, StandardUniform},
         Rng as RandRng,
+        distr::{Distribution, StandardUniform},
     };
 
     use super::Node;

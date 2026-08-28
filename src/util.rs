@@ -2,7 +2,7 @@ use blake2b_simd::Params;
 use ff::Field;
 use rand_core::{CryptoRng, Rng};
 
-use super::{note_encryption::Zip212Enforcement, Rseed};
+use super::{Rseed, note_encryption::Zip212Enforcement};
 
 pub fn hash_to_scalar(persona: &[u8], a: &[u8], b: &[u8]) -> jubjub::Fr {
     let mut hasher = Params::new().hash_length(64).personal(persona).to_state();

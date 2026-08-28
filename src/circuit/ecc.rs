@@ -15,7 +15,7 @@ use bellman::gadgets::boolean::Boolean;
 
 use group::Curve;
 
-use super::constants::{FixedGenerator, EDWARDS_D, MONTGOMERY_A, MONTGOMERY_SCALE};
+use super::constants::{EDWARDS_D, FixedGenerator, MONTGOMERY_A, MONTGOMERY_SCALE};
 
 #[derive(Clone)]
 pub struct EdwardsPoint {
@@ -624,15 +624,15 @@ mod test {
     use alloc::vec::Vec;
     use bellman::ConstraintSystem;
     use group::{
-        ff::{Field, PrimeField, PrimeFieldBits},
         Curve, Group,
+        ff::{Field, PrimeField, PrimeFieldBits},
     };
     use rand_core::{Rng, SeedableRng};
     use rand_xorshift::XorShiftRng;
 
     use bellman::gadgets::test::*;
 
-    use super::{fixed_base_multiplication, AllocatedNum, EdwardsPoint, MontgomeryPoint};
+    use super::{AllocatedNum, EdwardsPoint, MontgomeryPoint, fixed_base_multiplication};
     use crate::circuit::constants::{note_commitment_randomness_generator, to_montgomery_coords};
     use bellman::gadgets::boolean::{AllocatedBit, Boolean};
 

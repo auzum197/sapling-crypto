@@ -9,20 +9,20 @@ use memuse::DynamicUsage;
 use rand_core::Rng;
 
 use zcash_note_encryption::{
-    try_compact_note_decryption, try_note_decryption, try_output_recovery_with_ock,
-    try_output_recovery_with_ovk, BatchDomain, Domain, EphemeralKeyBytes, NoteEncryption,
-    NotePlaintextBytes, OutPlaintextBytes, OutgoingCipherKey, ShieldedOutput, COMPACT_NOTE_SIZE,
-    ENC_CIPHERTEXT_SIZE, NOTE_PLAINTEXT_SIZE, OUT_PLAINTEXT_SIZE,
+    BatchDomain, COMPACT_NOTE_SIZE, Domain, ENC_CIPHERTEXT_SIZE, EphemeralKeyBytes,
+    NOTE_PLAINTEXT_SIZE, NoteEncryption, NotePlaintextBytes, OUT_PLAINTEXT_SIZE, OutPlaintextBytes,
+    OutgoingCipherKey, ShieldedOutput, try_compact_note_decryption, try_note_decryption,
+    try_output_recovery_with_ock, try_output_recovery_with_ovk,
 };
 
 use crate::{
+    Diversifier, Note, PaymentAddress, Rseed,
     bundle::{GrothProofBytes, OutputDescription},
     keys::{
         DiversifiedTransmissionKey, EphemeralPublicKey, EphemeralSecretKey, OutgoingViewingKey,
         SharedSecret,
     },
     value::{NoteValue, ValueCommitment},
-    Diversifier, Note, PaymentAddress, Rseed,
 };
 
 use super::note::ExtractedNoteCommitment;
@@ -463,8 +463,8 @@ pub fn try_sapling_output_recovery(
 mod tests {
     use alloc::vec::Vec;
     use chacha20poly1305::{
-        aead::{AeadInPlace, KeyInit},
         ChaCha20Poly1305,
+        aead::{AeadInPlace, KeyInit},
     };
     use ff::{Field, PrimeField};
     use group::Group;
@@ -472,18 +472,18 @@ mod tests {
     use rand_core::{CryptoRng, Rng};
 
     use zcash_note_encryption::{
-        batch, EphemeralKeyBytes, NoteEncryption, OutgoingCipherKey, ENC_CIPHERTEXT_SIZE,
-        NOTE_PLAINTEXT_SIZE, OUT_CIPHERTEXT_SIZE, OUT_PLAINTEXT_SIZE,
+        ENC_CIPHERTEXT_SIZE, EphemeralKeyBytes, NOTE_PLAINTEXT_SIZE, NoteEncryption,
+        OUT_CIPHERTEXT_SIZE, OUT_PLAINTEXT_SIZE, OutgoingCipherKey, batch,
     };
 
     use super::{
-        prf_ock, sapling_note_encryption, try_sapling_compact_note_decryption,
-        try_sapling_note_decryption, try_sapling_output_recovery,
-        try_sapling_output_recovery_with_ock, CompactOutputDescription, SaplingDomain,
-        Zip212Enforcement,
+        CompactOutputDescription, SaplingDomain, Zip212Enforcement, prf_ock,
+        sapling_note_encryption, try_sapling_compact_note_decryption, try_sapling_note_decryption,
+        try_sapling_output_recovery, try_sapling_output_recovery_with_ock,
     };
 
     use crate::{
+        Diversifier, PaymentAddress, Rseed, SaplingIvk,
         bundle::{GrothProofBytes, OutputDescription},
         constants::GROTH_PROOF_SIZE,
         keys::{DiversifiedTransmissionKey, EphemeralSecretKey, OutgoingViewingKey},
@@ -492,7 +492,6 @@ mod tests {
         rng_compat::{OsRng, RngCore06},
         util::generate_random_rseed,
         value::{NoteValue, ValueCommitTrapdoor, ValueCommitment},
-        Diversifier, PaymentAddress, Rseed, SaplingIvk,
     };
 
     fn random_enc_ciphertext<R: Rng + CryptoRng>(
@@ -510,12 +509,14 @@ mod tests {
         let (ovk, ock, output) = random_enc_ciphertext_with(&ivk, zip212_enforcement, rng);
 
         assert!(try_sapling_note_decryption(&prepared_ivk, &output, zip212_enforcement).is_some());
-        assert!(try_sapling_compact_note_decryption(
-            &prepared_ivk,
-            &CompactOutputDescription::from(output.clone()),
-            zip212_enforcement,
-        )
-        .is_some());
+        assert!(
+            try_sapling_compact_note_decryption(
+                &prepared_ivk,
+                &CompactOutputDescription::from(output.clone()),
+                zip212_enforcement,
+            )
+            .is_some()
+        );
 
         let ovk_output_recovery = try_sapling_output_recovery(&ovk, &output, zip212_enforcement);
 
@@ -1332,15 +1333,11 @@ mod tests {
         let test_vectors = crate::test_vectors::note_encryption::make_test_vectors();
 
         macro_rules! read_cmu {
-            ($field:expr_2021) => {{
-                ExtractedNoteCommitment::from_bytes($field[..].try_into().unwrap()).unwrap()
-            }};
+            ($field:expr_2021) => {{ ExtractedNoteCommitment::from_bytes($field[..].try_into().unwrap()).unwrap() }};
         }
 
         macro_rules! read_jubjub_scalar {
-            ($field:expr_2021) => {{
-                jubjub::Fr::from_repr($field[..].try_into().unwrap()).unwrap()
-            }};
+            ($field:expr_2021) => {{ jubjub::Fr::from_repr($field[..].try_into().unwrap()).unwrap() }};
         }
 
         macro_rules! read_pk_d {

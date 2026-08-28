@@ -103,7 +103,7 @@ pub(super) mod testing {
     use proptest::prelude::*;
 
     use super::{
-        super::keys::{testing::arb_incoming_viewing_key, Diversifier, SaplingIvk},
+        super::keys::{Diversifier, SaplingIvk, testing::arb_incoming_viewing_key},
         PaymentAddress,
     };
 

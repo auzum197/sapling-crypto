@@ -5,7 +5,7 @@ use crate::constants::{PEDERSEN_HASH_CHUNKS_PER_GENERATOR, PEDERSEN_HASH_GENERAT
 use crate::once::OnceTable;
 use alloc::vec::Vec;
 use bls12_381::Scalar;
-use group::{ff::Field, Curve, Group};
+use group::{Curve, Group, ff::Field};
 use jubjub::ExtendedPoint;
 
 /// The `d` constant of the twisted Edwards curve.

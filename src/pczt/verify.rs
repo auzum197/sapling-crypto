@@ -1,6 +1,6 @@
 use core::fmt;
 
-use crate::{keys::FullViewingKey, value::ValueCommitment, Note, ViewingKey};
+use crate::{Note, ViewingKey, keys::FullViewingKey, value::ValueCommitment};
 
 impl super::Spend {
     /// Verifies that the `cv` field is consistent with the note fields.

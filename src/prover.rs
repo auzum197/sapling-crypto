@@ -1,21 +1,21 @@
 //! Abstractions over the proving system and parameters.
 
-use bellman::groth16::{create_random_proof, Proof};
+use bellman::groth16::{Proof, create_random_proof};
 use bls12_381::Bls12;
 use rand_core::Rng;
 
 use crate::{
+    MerklePath,
     bundle::GrothProofBytes,
     circuit,
     constants::GROTH_PROOF_SIZE,
     keys::EphemeralSecretKey,
     value::{NoteValue, ValueCommitTrapdoor},
-    MerklePath,
 };
 
 use super::{
-    circuit::{Output, OutputParameters, Spend, SpendParameters, ValueCommitmentOpening},
     Diversifier, Note, PaymentAddress, ProofGenerationKey, Rseed,
+    circuit::{Output, OutputParameters, Spend, SpendParameters, ValueCommitmentOpening},
 };
 
 /// Interface for creating Sapling Spend proofs.
@@ -179,12 +179,12 @@ pub mod mock {
 
     use super::{OutputProver, SpendProver};
     use crate::{
+        Diversifier, MerklePath, PaymentAddress, ProofGenerationKey, Rseed,
         bundle::GrothProofBytes,
         circuit::{self, ValueCommitmentOpening},
         constants::GROTH_PROOF_SIZE,
         keys::EphemeralSecretKey,
         value::{NoteValue, ValueCommitTrapdoor},
-        Diversifier, MerklePath, PaymentAddress, ProofGenerationKey, Rseed,
     };
 
     pub struct MockSpendProver;

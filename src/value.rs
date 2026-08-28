@@ -181,7 +181,7 @@ impl ValueCommitment {
 pub mod testing {
     use proptest::prelude::*;
 
-    use super::{NoteValue, ValueCommitTrapdoor, MAX_NOTE_VALUE};
+    use super::{MAX_NOTE_VALUE, NoteValue, ValueCommitTrapdoor};
 
     prop_compose! {
         /// Generate an arbitrary value in the range of valid nonnegative amounts.
@@ -229,8 +229,8 @@ mod tests {
     use proptest::prelude::*;
 
     use super::{
-        testing::{arb_note_value_bounded, arb_trapdoor},
         BalanceError, CommitmentSum, TrapdoorSum, ValueCommitment, ValueSum,
+        testing::{arb_note_value_bounded, arb_trapdoor},
     };
 
     proptest! {

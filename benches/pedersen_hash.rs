@@ -1,6 +1,6 @@
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use rand::Rng;
-use sapling_crypto::pedersen_hash::{pedersen_hash, Personalization};
+use sapling_crypto::pedersen_hash::{Personalization, pedersen_hash};
 
 #[cfg(unix)]
 use pprof::criterion::{Output, PProfProfiler};
