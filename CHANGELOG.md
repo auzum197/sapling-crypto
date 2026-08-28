@@ -50,5 +50,5 @@ than continuing the upstream `0.7.0` numbering.
   encryptor returned by `sapling_note_encryption` therefore takes a `rand_core`
   0.6 RNG in `encrypt_outgoing_plaintext`, even though this crate's own APIs now
   take `rand_core` 0.10 RNGs.
-- Raised the minimum supported Rust version to 1.88 and migrated the crate to
+- Raised the minimum supported Rust version to 1.91 and migrated the crate to
   the 2024 edition.
