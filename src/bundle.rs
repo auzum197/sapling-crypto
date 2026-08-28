@@ -6,15 +6,15 @@ use memuse::DynamicUsage;
 use redjubjub::{Binding, SpendAuth};
 
 use zcash_note_encryption::{
-    EphemeralKeyBytes, ShieldedOutput, COMPACT_NOTE_SIZE, ENC_CIPHERTEXT_SIZE, OUT_CIPHERTEXT_SIZE,
+    COMPACT_NOTE_SIZE, ENC_CIPHERTEXT_SIZE, EphemeralKeyBytes, OUT_CIPHERTEXT_SIZE, ShieldedOutput,
 };
 
 use crate::{
+    Nullifier,
     constants::GROTH_PROOF_SIZE,
     note::ExtractedNoteCommitment,
     note_encryption::{CompactOutputDescription, SaplingDomain},
     value::ValueCommitment,
-    Nullifier,
 };
 
 pub type GrothProofBytes = [u8; GROTH_PROOF_SIZE];
@@ -200,12 +200,12 @@ impl<V: DynamicUsage> DynamicUsage for Bundle<Authorized, V> {
         );
 
         (
-            bounds.0 .0 + bounds.1 .0 + bounds.2 .0,
+            bounds.0.0 + bounds.1.0 + bounds.2.0,
             bounds
                 .0
-                 .1
-                .zip(bounds.1 .1)
-                .zip(bounds.2 .1)
+                .1
+                .zip(bounds.1.1)
+                .zip(bounds.2.1)
                 .map(|((a, b), c)| a + b + c),
         )
     }
@@ -505,21 +505,21 @@ pub mod testing {
     use group::{Group, GroupEncoding};
     use proptest::collection::vec;
     use proptest::prelude::*;
-    use rand::{rngs::StdRng, SeedableRng};
+    use rand::{SeedableRng, rngs::StdRng};
 
     use crate::{
+        Nullifier,
         constants::GROTH_PROOF_SIZE,
         note::testing::arb_cmu,
         value::{
+            MAX_NOTE_VALUE, ValueCommitment,
             testing::{arb_note_value_bounded, arb_trapdoor},
-            ValueCommitment, MAX_NOTE_VALUE,
         },
-        Nullifier,
     };
 
     use super::{
-        Authorized, Bundle, GrothProofBytes, OutputDescription, SpendDescription,
-        ENC_CIPHERTEXT_SIZE, OUT_CIPHERTEXT_SIZE,
+        Authorized, Bundle, ENC_CIPHERTEXT_SIZE, GrothProofBytes, OUT_CIPHERTEXT_SIZE,
+        OutputDescription, SpendDescription,
     };
 
     prop_compose! {

@@ -1,4 +1,4 @@
-use group::{ff::Field, GroupEncoding};
+use group::{GroupEncoding, ff::Field};
 use rand_core::{CryptoRng, Rng};
 use zcash_spec::PrfExpand;
 
@@ -8,7 +8,7 @@ use crate::{
 };
 
 use super::{
-    keys::EphemeralSecretKey, value::NoteValue, Nullifier, NullifierDerivingKey, PaymentAddress,
+    Nullifier, NullifierDerivingKey, PaymentAddress, keys::EphemeralSecretKey, value::NoteValue,
 };
 
 mod commitment;

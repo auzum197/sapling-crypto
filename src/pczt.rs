@@ -8,16 +8,16 @@ use core::fmt;
 use getset::Getters;
 use redjubjub::{Binding, SpendAuth};
 use zcash_note_encryption::{
-    EphemeralKeyBytes, OutgoingCipherKey, ENC_CIPHERTEXT_SIZE, OUT_CIPHERTEXT_SIZE,
+    ENC_CIPHERTEXT_SIZE, EphemeralKeyBytes, OUT_CIPHERTEXT_SIZE, OutgoingCipherKey,
 };
 use zip32::ChildIndex;
 
 use crate::{
+    Anchor, MerklePath, Nullifier, PaymentAddress, ProofGenerationKey, Rseed,
     bundle::GrothProofBytes,
     keys::SpendAuthorizingKey,
     note::ExtractedNoteCommitment,
     value::{NoteValue, ValueCommitTrapdoor, ValueCommitment, ValueSum},
-    Anchor, MerklePath, Nullifier, PaymentAddress, ProofGenerationKey, Rseed,
 };
 
 mod parse;

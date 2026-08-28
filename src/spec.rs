@@ -1,7 +1,7 @@
 //! Helper functions defined in the Zcash Protocol Specification.
 
 use blake2s_simd::Params as Blake2sParams;
-use group::{cofactor::CofactorGroup, ff::PrimeField, Curve, GroupEncoding, WnafBase, WnafScalar};
+use group::{Curve, GroupEncoding, WnafBase, WnafScalar, cofactor::CofactorGroup, ff::PrimeField};
 
 use super::{
     constants::{
@@ -9,7 +9,7 @@ use super::{
         NOTE_COMMITMENT_RANDOMNESS_GENERATOR, NULLIFIER_POSITION_GENERATOR, PRF_NF_PERSONALIZATION,
     },
     group_hash::group_hash,
-    pedersen_hash::{pedersen_hash, Personalization},
+    pedersen_hash::{Personalization, pedersen_hash},
 };
 
 const PREPARED_WINDOW_SIZE: usize = 4;

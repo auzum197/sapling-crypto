@@ -3,8 +3,8 @@ use core::fmt;
 use rand::{CryptoRng, Rng};
 
 use crate::{
-    prover::{OutputProver, SpendProver},
     Note, Rseed,
+    prover::{OutputProver, SpendProver},
 };
 
 impl super::Bundle {

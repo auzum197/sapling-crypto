@@ -111,7 +111,7 @@ mod test {
 
     use bellman::gadgets::boolean::{AllocatedBit, Boolean};
     use bellman::gadgets::test::*;
-    use group::{ff::PrimeField, Curve};
+    use group::{Curve, ff::PrimeField};
     use rand_core::{Rng, SeedableRng};
     use rand_xorshift::XorShiftRng;
 

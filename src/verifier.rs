@@ -1,6 +1,6 @@
 use bellman::{gadgets::multipack, groth16::Proof};
 use bls12_381::Bls12;
-use group::{ff::PrimeField, Curve};
+use group::{Curve, ff::PrimeField};
 use redjubjub::{Binding, SpendAuth};
 
 use crate::{

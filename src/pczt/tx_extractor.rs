@@ -3,11 +3,11 @@ use core::fmt;
 use rand::{CryptoRng, Rng};
 
 use crate::{
+    Bundle,
     bundle::{
         Authorization, Authorized, EffectsOnly, GrothProofBytes, OutputDescription,
         SpendDescription,
     },
-    Bundle,
 };
 
 use super::{Output, Spend};

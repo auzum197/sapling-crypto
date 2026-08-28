@@ -13,9 +13,9 @@ use super::{
     constants::{self, PROOF_GENERATION_KEY_GENERATOR},
     note_encryption::KDF_SAPLING_PERSONALIZATION,
     spec::{
-        crh_ivk, diversify_hash, ka_sapling_agree, ka_sapling_agree_prepared,
-        ka_sapling_derive_public, ka_sapling_derive_public_subgroup_prepared, PreparedBase,
-        PreparedBaseSubgroup, PreparedScalar,
+        PreparedBase, PreparedBaseSubgroup, PreparedScalar, crh_ivk, diversify_hash,
+        ka_sapling_agree, ka_sapling_agree_prepared, ka_sapling_derive_public,
+        ka_sapling_derive_public_subgroup_prepared,
     },
 };
 

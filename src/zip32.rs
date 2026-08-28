@@ -17,11 +17,11 @@ use corez::io::{self, Read, Write};
 use super::{Diversifier, NullifierDerivingKey, PaymentAddress, ViewingKey};
 use crate::note_encryption::PreparedIncomingViewingKey;
 use crate::{
+    SaplingIvk,
     constants::PROOF_GENERATION_KEY_GENERATOR,
     keys::{
         DecodingError, ExpandedSpendingKey, FullViewingKey, OutgoingViewingKey, SpendAuthorizingKey,
     },
-    SaplingIvk,
 };
 
 pub const ZIP32_SAPLING_MASTER_PERSONALIZATION: &[u8; 16] = b"ZcashIP32Sapling";

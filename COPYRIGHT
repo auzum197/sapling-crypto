@@ -1,7 +1,10 @@
-Copyrights in the "sapling-crypto" library are retained by their contributors. No
-copyright assignment is required to contribute to the "sapling-crypto" library.
+Copyright (c) The Zakura Contributors
 
-The "sapling-crypto" library is licensed under either of
+Copyrights in the "zakura-sapling-crypto" library are retained by their contributors. No
+copyright assignment is required to contribute to the "zakura-sapling-crypto"
+library.
+
+The "zakura-sapling-crypto" library is licensed under either of
 
  * Apache License, Version 2.0, (see ./LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0)
  * MIT license (see ./LICENSE-MIT or http://opensource.org/licenses/MIT)

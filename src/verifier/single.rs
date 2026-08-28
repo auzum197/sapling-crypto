@@ -1,4 +1,4 @@
-use bellman::groth16::{verify_proof, Proof};
+use bellman::groth16::{Proof, verify_proof};
 use bls12_381::Bls12;
 use redjubjub::{Binding, SpendAuth};
 

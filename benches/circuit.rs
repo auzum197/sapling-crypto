@@ -8,10 +8,10 @@ use group::ff::Field;
 use rand::{Rng, RngExt, SeedableRng};
 use rand_xorshift::XorShiftRng;
 use sapling_crypto::{
+    Diversifier,
     circuit::{Spend, ValueCommitmentOpening},
     keys::ExpandedSpendingKey,
     value::NoteValue,
-    Diversifier,
 };
 
 #[cfg(unix)]

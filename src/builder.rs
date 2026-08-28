@@ -6,34 +6,34 @@ use core::{fmt, iter, marker::PhantomData};
 
 use group::ff::Field;
 use incrementalmerkletree::Position;
-use rand::{seq::SliceRandom, Rng};
+use rand::{Rng, seq::SliceRandom};
 use rand_core::CryptoRng;
 use redjubjub::{Binding, SpendAuth};
 use zcash_note_encryption::EphemeralKeyBytes;
 
 use crate::{
+    Anchor, Diversifier, MerklePath, NOTE_COMMITMENT_TREE_DEPTH, Node, Note, Nullifier,
+    PaymentAddress, SaplingIvk,
     bundle::{Authorization, Authorized, Bundle, GrothProofBytes},
     keys::{
         EphemeralSecretKey, ExpandedSpendingKey, FullViewingKey, OutgoingViewingKey,
         SpendAuthorizingKey, SpendValidatingKey,
     },
     note::ExtractedNoteCommitment,
-    note_encryption::{sapling_note_encryption, Zip212Enforcement},
+    note_encryption::{Zip212Enforcement, sapling_note_encryption},
     rng_compat::RngCore06,
     util::generate_random_rseed_internal,
     value::{NoteValue, ValueCommitTrapdoor, ValueCommitment, ValueSum},
-    Anchor, Diversifier, MerklePath, Node, Note, Nullifier, PaymentAddress, SaplingIvk,
-    NOTE_COMMITMENT_TREE_DEPTH,
 };
 
 #[cfg(feature = "circuit")]
 use crate::{
+    ProofGenerationKey,
     bundle::{OutputDescription, SpendDescription},
     circuit,
     prover::{OutputProver, SpendProver},
     value::{CommitmentSum, TrapdoorSum},
     zip32::ExtendedSpendingKey,
-    ProofGenerationKey,
 };
 
 /// If there are any shielded inputs, always have at least two shielded outputs, padding
@@ -1300,15 +1300,15 @@ pub(crate) mod testing {
 
     use proptest::collection::vec;
     use proptest::prelude::*;
-    use rand::{rngs::StdRng, SeedableRng};
+    use rand::{SeedableRng, rngs::StdRng};
 
     use crate::{
+        Anchor, Node,
         bundle::{Authorized, Bundle},
         note_encryption::Zip212Enforcement,
         testing::{arb_node, arb_note},
         value::testing::arb_positive_note_value,
         zip32::testing::arb_extended_spending_key,
-        Anchor, Node,
     };
     use incrementalmerkletree::{
         frontier::testing::arb_commitment_tree, witness::IncrementalWitness,
