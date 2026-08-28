@@ -1332,25 +1332,25 @@ mod tests {
         let test_vectors = crate::test_vectors::note_encryption::make_test_vectors();
 
         macro_rules! read_cmu {
-            ($field:expr) => {{
+            ($field:expr_2021) => {{
                 ExtractedNoteCommitment::from_bytes($field[..].try_into().unwrap()).unwrap()
             }};
         }
 
         macro_rules! read_jubjub_scalar {
-            ($field:expr) => {{
+            ($field:expr_2021) => {{
                 jubjub::Fr::from_repr($field[..].try_into().unwrap()).unwrap()
             }};
         }
 
         macro_rules! read_pk_d {
-            ($field:expr) => {
+            ($field:expr_2021) => {
                 DiversifiedTransmissionKey::from_bytes(&$field).unwrap()
             };
         }
 
         macro_rules! read_cv {
-            ($field:expr) => {
+            ($field:expr_2021) => {
                 ValueCommitment::from_bytes_not_small_order(&$field).unwrap()
             };
         }
