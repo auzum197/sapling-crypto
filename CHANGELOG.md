@@ -10,6 +10,8 @@ internal implementation details are not tracked here.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-28
+
 ### Changed
 
 - Renamed the package from `sapling-crypto` to `zakura-sapling-crypto`; the
