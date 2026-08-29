@@ -10,6 +10,14 @@ internal implementation details are not tracked here.
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-08-29
+
+### Changed
+
+- Moved the repository from zakura-core/libraries to zakura-core/common;
+  crate metadata and the packaged README now point at the new URL
+  ([#266](https://github.com/zakura-core/common/pull/266)).
+
 ## [1.0.0] - 2026-08-28
 
 ### Changed
