@@ -49,7 +49,7 @@ rand_core_06 = { version = "0.6", default-features = false, package = "rand_core
 redjubjub = { package = "zakura-redjubjub", git = "https://github.com/zakura-core/common.git", rev = "66ddff6adf11ee134efef0e3e28ac5f72ea92824", default-features = false }
 subtle = { version = "2.6", default-features = false }
 tracing = { version = "0.1", default-features = false }
-zcash_note_encryption = { version = "0.4", features = ["pre-zip-212"] }
+zcash_note_encryption = { git = "https://github.com/zcash/zcash_note_encryption", rev = "40b73b157374b62b648a26b94a1f236e5d9c389f", features = ["pre-zip-212"] }
 zcash_spec = "0.2"
 zip32 = { version = "0.2", default-features = false }
 

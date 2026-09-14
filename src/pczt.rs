@@ -7,9 +7,7 @@ use core::fmt;
 
 use getset::Getters;
 use redjubjub::{Binding, SpendAuth};
-use zcash_note_encryption::{
-    ENC_CIPHERTEXT_SIZE, EphemeralKeyBytes, OUT_CIPHERTEXT_SIZE, OutgoingCipherKey,
-};
+use zcash_note_encryption::{EphemeralKeyBytes, OUT_CIPHERTEXT_SIZE, OutgoingCipherKey};
 use zip32::ChildIndex;
 
 use crate::{
@@ -41,6 +39,7 @@ mod signer;
 pub use signer::SignerError;
 
 mod tx_extractor;
+use crate::note_encryption::ENC_CIPHERTEXT_SIZE;
 pub use tx_extractor::{TxExtractorError, Unbound};
 
 /// PCZT fields that are specific to producing the transaction's Sapling bundle (if any).
