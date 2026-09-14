@@ -41,10 +41,11 @@ paths are unchanged.
   (packages `zakura-bellman`, `zakura-bls12-381`, `zakura-jubjub`, `zakura-redjubjub`).
   The same rev supplies `zakura-sapling`, so the crate and its curve stack come from one
   monorepo snapshot.
-- `zcash_note_encryption` → `https://github.com/zcash/zcash_note_encryption` rev
-  `40b73b157374b62b648a26b94a1f236e5d9c389f`, the revision QED-it/orchard `zsa1` pins
-  (upstream `main`, which already has the ZSA `Domain` generalization). It is a direct git
-  dependency, not a `[patch]`.
+- `zcash_note_encryption` → `https://github.com/auzum197/zcash_note_encryption.git` rev
+  `c2dba6105908ef9a2e04766cdccac18b0a4a953c` (package `auzum-zcash-note-encryption`, library
+  `zcash_note_encryption`). Its `src/` is identical to zcash/zcash_note_encryption
+  `40b73b15`, the revision QED-it/orchard `zsa1` pins (upstream `main`, which already has
+  the ZSA `Domain` generalization). It is a direct git dependency, not a `[patch]`.
 
 **Invariant:** the auzum orchard fork and the auzum halo2 fork pin the *same*
 `zakura-core/common` rev, so a consumer linking Sapling and Orchard gets exactly one copy of

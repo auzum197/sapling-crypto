@@ -53,10 +53,11 @@ zakura_rev   := common_pin
 common_url := "https://github.com/zakura-core/common.git"
 common_pin := "66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 
-# zcash_note_encryption: the revision QED-it/orchard zsa1 pins, depended on directly
-# (no [patch]). Upstream main already carries the ZSA Domain generalization.
-note_encryption_url := "https://github.com/zcash/zcash_note_encryption"
-note_encryption_pin := "40b73b157374b62b648a26b94a1f236e5d9c389f"
+# zcash_note_encryption -> auzum-zcash-note-encryption, depended on directly (no [patch]).
+# Its src/ is identical to zcash/zcash_note_encryption 40b73b15, the revision
+# QED-it/orchard zsa1 pins (upstream main, which carries the ZSA Domain generalization).
+note_encryption_url := "https://github.com/auzum197/zcash_note_encryption.git"
+note_encryption_pin := "c2dba6105908ef9a2e04766cdccac18b0a4a953c"
 
 # -----------------------------------------------------------------------------
 
@@ -233,7 +234,7 @@ pins:
     # The manifest line alone does not prove what resolves: a stray [patch] or a
     # transitive crates.io edge could still win. Check the lockfile source.
     echo "==> Cargo.lock zcash_note_encryption source"
-    sources="$(grep -A2 '^name = "zcash_note_encryption"$' Cargo.lock | grep '^source = ' | sort -u || true)"
+    sources="$(grep -A2 -E '^name = "(auzum-zcash-note-encryption|zcash_note_encryption)"$' Cargo.lock | grep '^source = ' | sort -u || true)"
     want_source='source = "git+{{note_encryption_url}}?rev={{note_encryption_pin}}#{{note_encryption_pin}}"'
     if [[ "$sources" != "$want_source" ]]; then
         echo "FAIL zcash_note_encryption resolves from:" >&2

@@ -124,6 +124,7 @@ name = "auzum-sapling-crypto"
 version = "0.7.0"
 dependencies = [
  "aes",
+ "auzum-zcash-note-encryption",
  "bitvec",
  "blake2b_simd",
  "blake2s_simd",
@@ -151,9 +152,20 @@ dependencies = [
  "zakura-bls12-381",
  "zakura-jubjub",
  "zakura-redjubjub",
- "zcash_note_encryption",
  "zcash_spec",
  "zip32",
+]
+
+[[package]]
+name = "auzum-zcash-note-encryption"
+version = "0.4.2"
+source = "git+https://github.com/auzum197/zcash_note_encryption.git?rev=c2dba6105908ef9a2e04766cdccac18b0a4a953c#c2dba6105908ef9a2e04766cdccac18b0a4a953c"
+dependencies = [
+ "chacha20 0.9.1",
+ "chacha20poly1305",
+ "cipher",
+ "rand_core 0.6.4",
+ "subtle",
 ]
 
 [[package]]
@@ -2096,18 +2108,6 @@ dependencies = [
  "thiserror",
  "zakura-reddsa",
  "zeroize",
-]
-
-[[package]]
-name = "zcash_note_encryption"
-version = "0.4.2"
-source = "git+https://github.com/zcash/zcash_note_encryption?rev=40b73b157374b62b648a26b94a1f236e5d9c389f#40b73b157374b62b648a26b94a1f236e5d9c389f"
-dependencies = [
- "chacha20 0.9.1",
- "chacha20poly1305",
- "cipher",
- "rand_core 0.6.4",
- "subtle",
 ]
 
 [[package]]
