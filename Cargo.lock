@@ -2011,8 +2011,8 @@ dependencies = [
 
 [[package]]
 name = "zakura-bellman"
-version = "1.0.1"
-source = "git+https://github.com/zakura-core/common.git?rev=052100f9b9e0f67d2c6aa0406e780f098b94c2a2#052100f9b9e0f67d2c6aa0406e780f098b94c2a2"
+version = "1.2.0"
+source = "git+https://github.com/zakura-core/common.git?rev=66ddff6adf11ee134efef0e3e28ac5f72ea92824#66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 dependencies = [
  "bitvec",
  "blake2s_simd",
@@ -2027,8 +2027,8 @@ dependencies = [
 
 [[package]]
 name = "zakura-bls12-381"
-version = "1.0.1"
-source = "git+https://github.com/zakura-core/common.git?rev=052100f9b9e0f67d2c6aa0406e780f098b94c2a2#052100f9b9e0f67d2c6aa0406e780f098b94c2a2"
+version = "1.2.0"
+source = "git+https://github.com/zakura-core/common.git?rev=66ddff6adf11ee134efef0e3e28ac5f72ea92824#66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 dependencies = [
  "ff",
  "group",
@@ -2039,8 +2039,8 @@ dependencies = [
 
 [[package]]
 name = "zakura-jubjub"
-version = "1.0.1"
-source = "git+https://github.com/zakura-core/common.git?rev=052100f9b9e0f67d2c6aa0406e780f098b94c2a2#052100f9b9e0f67d2c6aa0406e780f098b94c2a2"
+version = "1.2.0"
+source = "git+https://github.com/zakura-core/common.git?rev=66ddff6adf11ee134efef0e3e28ac5f72ea92824#66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 dependencies = [
  "bitvec",
  "ff",
@@ -2052,16 +2052,16 @@ dependencies = [
 
 [[package]]
 name = "zakura-pairing"
-version = "1.0.1"
-source = "git+https://github.com/zakura-core/common.git?rev=052100f9b9e0f67d2c6aa0406e780f098b94c2a2#052100f9b9e0f67d2c6aa0406e780f098b94c2a2"
+version = "1.2.0"
+source = "git+https://github.com/zakura-core/common.git?rev=66ddff6adf11ee134efef0e3e28ac5f72ea92824#66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 dependencies = [
  "group",
 ]
 
 [[package]]
 name = "zakura-pasta-curves"
-version = "1.0.1"
-source = "git+https://github.com/zakura-core/common.git?rev=052100f9b9e0f67d2c6aa0406e780f098b94c2a2#052100f9b9e0f67d2c6aa0406e780f098b94c2a2"
+version = "1.2.0"
+source = "git+https://github.com/zakura-core/common.git?rev=66ddff6adf11ee134efef0e3e28ac5f72ea92824#66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 dependencies = [
  "ff",
  "group",
@@ -2072,8 +2072,8 @@ dependencies = [
 
 [[package]]
 name = "zakura-reddsa"
-version = "1.0.1"
-source = "git+https://github.com/zakura-core/common.git?rev=052100f9b9e0f67d2c6aa0406e780f098b94c2a2#052100f9b9e0f67d2c6aa0406e780f098b94c2a2"
+version = "1.2.0"
+source = "git+https://github.com/zakura-core/common.git?rev=66ddff6adf11ee134efef0e3e28ac5f72ea92824#66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 dependencies = [
  "blake2b_simd",
  "frost-rerandomized",
@@ -2089,8 +2089,8 @@ dependencies = [
 
 [[package]]
 name = "zakura-redjubjub"
-version = "1.0.1"
-source = "git+https://github.com/zakura-core/common.git?rev=052100f9b9e0f67d2c6aa0406e780f098b94c2a2#052100f9b9e0f67d2c6aa0406e780f098b94c2a2"
+version = "1.2.0"
+source = "git+https://github.com/zakura-core/common.git?rev=66ddff6adf11ee134efef0e3e28ac5f72ea92824#66ddff6adf11ee134efef0e3e28ac5f72ea92824"
 dependencies = [
  "rand_core 0.10.1",
  "thiserror",

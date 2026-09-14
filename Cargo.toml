@@ -26,11 +26,11 @@ name = "sapling_crypto"
 
 [dependencies]
 aes = "0.8"
-bellman = { package = "zakura-bellman", git = "https://github.com/zakura-core/common.git", rev = "052100f9b9e0f67d2c6aa0406e780f098b94c2a2", features = ["groth16"], optional = true, default-features = false }
+bellman = { package = "zakura-bellman", git = "https://github.com/zakura-core/common.git", rev = "66ddff6adf11ee134efef0e3e28ac5f72ea92824", features = ["groth16"], optional = true, default-features = false }
 bitvec = { version = "1", default-features = false }
 blake2b_simd = { version = "1", default-features = false }
 blake2s_simd = { version = "1", default-features = false }
-bls12_381 = { package = "zakura-bls12-381", git = "https://github.com/zakura-core/common.git", rev = "052100f9b9e0f67d2c6aa0406e780f098b94c2a2", features = ["alloc"], default-features = false }
+bls12_381 = { package = "zakura-bls12-381", git = "https://github.com/zakura-core/common.git", rev = "66ddff6adf11ee134efef0e3e28ac5f72ea92824", features = ["alloc"], default-features = false }
 corez = { version = "0.1.1", features = ["alloc"], default-features = false }
 document-features = { version = "0.2", optional = true }
 ff = { version = "0.14", default-features = false }
@@ -39,14 +39,14 @@ getset = "0.1"
 group = "0.14"
 hex = { version = "0.4", features = ["alloc"], default-features = false }
 incrementalmerkletree = { version = "0.8.1", features = ["legacy-api"], default-features = false }
-jubjub = { package = "zakura-jubjub", git = "https://github.com/zakura-core/common.git", rev = "052100f9b9e0f67d2c6aa0406e780f098b94c2a2", features = ["alloc"], default-features = false }
+jubjub = { package = "zakura-jubjub", git = "https://github.com/zakura-core/common.git", rev = "66ddff6adf11ee134efef0e3e28ac5f72ea92824", features = ["alloc"], default-features = false }
 memuse = { version = "0.2.2", default-features = false }
 once_cell = { version = "1", features = ["race", "alloc"], default-features = false }
 proptest = { version = ">=1.0.0, <1.7.0", optional = true }
 rand = { version = "0.10", default-features = false }
 rand_core = { version = "0.10", default-features = false }
 rand_core_06 = { version = "0.6", default-features = false, package = "rand_core" }
-redjubjub = { package = "zakura-redjubjub", git = "https://github.com/zakura-core/common.git", rev = "052100f9b9e0f67d2c6aa0406e780f098b94c2a2", default-features = false }
+redjubjub = { package = "zakura-redjubjub", git = "https://github.com/zakura-core/common.git", rev = "66ddff6adf11ee134efef0e3e28ac5f72ea92824", default-features = false }
 subtle = { version = "2.6", default-features = false }
 tracing = { version = "0.1", default-features = false }
 zcash_note_encryption = { version = "0.4", features = ["pre-zip-212"] }
