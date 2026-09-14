@@ -14,8 +14,8 @@ use crate::{
     constants::GROTH_PROOF_SIZE,
     note::ExtractedNoteCommitment,
     note_encryption::{
-        CompactEncCiphertext, CompactOutputDescription, EncCiphertext, SaplingDomain,
-        COMPACT_NOTE_SIZE, ENC_CIPHERTEXT_SIZE,
+        COMPACT_NOTE_SIZE, CompactEncCiphertext, CompactOutputDescription, ENC_CIPHERTEXT_SIZE,
+        EncCiphertext, SaplingDomain,
     },
     value::ValueCommitment,
 };
@@ -533,8 +533,8 @@ pub mod testing {
     };
 
     use super::{
-        Authorized, Bundle, ENC_CIPHERTEXT_SIZE, GrothProofBytes, NoteBytesData, OUT_CIPHERTEXT_SIZE,
-        OutputDescription, SpendDescription,
+        Authorized, Bundle, ENC_CIPHERTEXT_SIZE, GrothProofBytes, NoteBytesData,
+        OUT_CIPHERTEXT_SIZE, OutputDescription, SpendDescription,
     };
 
     prop_compose! {
