@@ -36,7 +36,7 @@ where
     let mut bits = personalization.get_bits().into_iter().chain(bits);
 
     let mut result = jubjub::SubgroupPoint::identity();
-    let mut generators = crate::constants::PEDERSEN_HASH_EXP_TABLE.iter();
+    let mut generators = crate::constants::pedersen_hash_exp_table().iter();
 
     loop {
         let mut acc = jubjub::Fr::zero();
@@ -89,8 +89,13 @@ where
         let acc = acc.to_repr();
         let num_limbs: usize = acc.as_ref().len() / 8;
         let mut limbs = vec![0u64; num_limbs + 1];
-        for (src, dst) in acc.chunks_exact(8).zip(limbs[..num_limbs].iter_mut()) {
-            *dst = u64::from_le_bytes(src.try_into().expect("correct length"));
+        for (src, dst) in acc
+            .as_chunks::<8>()
+            .0
+            .iter()
+            .zip(limbs[..num_limbs].iter_mut())
+        {
+            *dst = u64::from_le_bytes(*src);
         }
 
         let mut tmp = jubjub::SubgroupPoint::identity();

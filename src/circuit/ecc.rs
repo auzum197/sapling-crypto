@@ -15,7 +15,7 @@ use bellman::gadgets::boolean::Boolean;
 
 use group::Curve;
 
-use super::constants::{FixedGenerator, EDWARDS_D, MONTGOMERY_A, MONTGOMERY_SCALE};
+use super::constants::{EDWARDS_D, FixedGenerator, MONTGOMERY_A, MONTGOMERY_SCALE};
 
 #[derive(Clone)]
 pub struct EdwardsPoint {
@@ -624,16 +624,16 @@ mod test {
     use alloc::vec::Vec;
     use bellman::ConstraintSystem;
     use group::{
-        ff::{Field, PrimeField, PrimeFieldBits},
         Curve, Group,
+        ff::{Field, PrimeField, PrimeFieldBits},
     };
-    use rand_core::{RngCore, SeedableRng};
+    use rand_core::{Rng, SeedableRng};
     use rand_xorshift::XorShiftRng;
 
     use bellman::gadgets::test::*;
 
-    use super::{fixed_base_multiplication, AllocatedNum, EdwardsPoint, MontgomeryPoint};
-    use crate::circuit::constants::{to_montgomery_coords, NOTE_COMMITMENT_RANDOMNESS_GENERATOR};
+    use super::{AllocatedNum, EdwardsPoint, MontgomeryPoint, fixed_base_multiplication};
+    use crate::circuit::constants::{note_commitment_randomness_generator, to_montgomery_coords};
     use bellman::gadgets::boolean::{AllocatedBit, Boolean};
 
     #[test]
@@ -755,7 +755,7 @@ mod test {
 
             let q = fixed_base_multiplication(
                 cs.namespace(|| "multiplication"),
-                &NOTE_COMMITMENT_RANDOMNESS_GENERATOR,
+                note_commitment_randomness_generator(),
                 &s_bits,
             )
             .unwrap();
@@ -836,10 +836,10 @@ mod test {
                 v: num_v0,
             };
 
-            let mut should_we_select = rng.next_u32() % 2 != 0;
+            let mut should_we_select = !rng.next_u32().is_multiple_of(2);
 
             // Conditionally allocate
-            let mut b = if rng.next_u32() % 2 != 0 {
+            let mut b = if !rng.next_u32().is_multiple_of(2) {
                 Boolean::from(
                     AllocatedBit::alloc(cs.namespace(|| "condition"), Some(should_we_select))
                         .unwrap(),
@@ -849,7 +849,7 @@ mod test {
             };
 
             // Conditionally negate
-            if rng.next_u32() % 2 != 0 {
+            if !rng.next_u32().is_multiple_of(2) {
                 b = b.not();
                 should_we_select = !should_we_select;
             }

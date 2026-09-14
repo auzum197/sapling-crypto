@@ -4,23 +4,23 @@ use alloc::vec::Vec;
 use core::fmt;
 use corez::io;
 
-use group::{ff::PrimeField, Curve};
+use group::{Curve, ff::PrimeField};
 
-use bellman::{groth16, Circuit, ConstraintSystem, SynthesisError};
+use bellman::{Circuit, ConstraintSystem, SynthesisError, groth16};
 use bls12_381::Bls12;
 
+use bellman::gadgets::Assignment;
 use bellman::gadgets::blake2s;
 use bellman::gadgets::boolean;
 use bellman::gadgets::multipack;
 use bellman::gadgets::num;
-use bellman::gadgets::Assignment;
 
 use self::constants::{
-    NOTE_COMMITMENT_RANDOMNESS_GENERATOR, NULLIFIER_POSITION_GENERATOR,
-    PROOF_GENERATION_KEY_GENERATOR, SPENDING_KEY_GENERATOR, VALUE_COMMITMENT_RANDOMNESS_GENERATOR,
-    VALUE_COMMITMENT_VALUE_GENERATOR,
+    note_commitment_randomness_generator, nullifier_position_generator,
+    proof_generation_key_generator, spending_key_generator, value_commitment_randomness_generator,
+    value_commitment_value_generator,
 };
-use crate::{value::NoteValue, PaymentAddress, ProofGenerationKey};
+use crate::{PaymentAddress, ProofGenerationKey, value::NoteValue};
 
 #[cfg(test)]
 use group::ff::PrimeFieldBits;
@@ -121,7 +121,7 @@ where
     // Compute the note value in the exponent
     let value = ecc::fixed_base_multiplication(
         cs.namespace(|| "compute the value in the exponent"),
-        &VALUE_COMMITMENT_VALUE_GENERATOR,
+        value_commitment_value_generator(),
         &value_bits,
     )?;
 
@@ -136,7 +136,7 @@ where
     // Compute the randomness in the exponent
     let rcv = ecc::fixed_base_multiplication(
         cs.namespace(|| "computation of rcv"),
-        &VALUE_COMMITMENT_RANDOMNESS_GENERATOR,
+        value_commitment_randomness_generator(),
         &rcv,
     )?;
 
@@ -172,7 +172,7 @@ impl Circuit<bls12_381::Scalar> for Spend {
             // Compute the randomness in the exponent
             let ar = ecc::fixed_base_multiplication(
                 cs.namespace(|| "computation of randomization for the signing key"),
-                &SPENDING_KEY_GENERATOR,
+                spending_key_generator(),
                 &ar,
             )?;
 
@@ -198,7 +198,7 @@ impl Circuit<bls12_381::Scalar> for Spend {
             // Compute nk = [nsk] ProvingPublicKey
             nk = ecc::fixed_base_multiplication(
                 cs.namespace(|| "computation of nk"),
-                &PROOF_GENERATION_KEY_GENERATOR,
+                proof_generation_key_generator(),
                 &nsk,
             )?;
         }
@@ -312,7 +312,7 @@ impl Circuit<bls12_381::Scalar> for Spend {
             // Compute the note commitment randomness in the exponent
             let rcm = ecc::fixed_base_multiplication(
                 cs.namespace(|| "computation of commitment randomness"),
-                &NOTE_COMMITMENT_RANDOMNESS_GENERATOR,
+                note_commitment_randomness_generator(),
                 &rcm,
             )?;
 
@@ -404,7 +404,7 @@ impl Circuit<bls12_381::Scalar> for Spend {
             // Compute the position in the exponent
             let position = ecc::fixed_base_multiplication(
                 cs.namespace(|| "g^position"),
-                &NULLIFIER_POSITION_GENERATOR,
+                nullifier_position_generator(),
                 &position_bits,
             )?;
 
@@ -535,7 +535,7 @@ impl Circuit<bls12_381::Scalar> for Output {
             // Compute the note commitment randomness in the exponent
             let rcm = ecc::fixed_base_multiplication(
                 cs.namespace(|| "computation of commitment randomness"),
-                &NOTE_COMMITMENT_RANDOMNESS_GENERATOR,
+                note_commitment_randomness_generator(),
                 &rcm,
             )?;
 
@@ -635,12 +635,12 @@ pub struct PreparedOutputVerifyingKey(pub(crate) groth16::PreparedVerifyingKey<B
 #[test]
 fn test_input_circuit_with_bls12_381() {
     use crate::{
-        keys::SpendValidatingKey, pedersen_hash, Diversifier, Note, ProofGenerationKey, Rseed,
+        Diversifier, Note, ProofGenerationKey, Rseed, keys::SpendValidatingKey, pedersen_hash,
     };
 
     use bellman::gadgets::test::*;
     use group::ff::Field;
-    use rand_core::{RngCore, SeedableRng};
+    use rand_core::{Rng, SeedableRng};
     use rand_xorshift::XorShiftRng;
 
     let mut rng = XorShiftRng::from_seed([
@@ -679,8 +679,13 @@ fn test_input_circuit_with_bls12_381() {
         }
 
         let commitment_randomness = jubjub::Fr::random(&mut rng);
-        let auth_path =
-            vec![Some((bls12_381::Scalar::random(&mut rng), rng.next_u32() % 2 != 0)); tree_depth];
+        let auth_path = vec![
+            Some((
+                bls12_381::Scalar::random(&mut rng),
+                !rng.next_u32().is_multiple_of(2),
+            ));
+            tree_depth
+        ];
         let ar = jubjub::Fr::random(&mut rng);
 
         {
@@ -784,12 +789,12 @@ fn test_input_circuit_with_bls12_381() {
 #[test]
 fn test_input_circuit_with_bls12_381_external_test_vectors() {
     use crate::{
-        keys::SpendValidatingKey, pedersen_hash, Diversifier, Note, ProofGenerationKey, Rseed,
+        Diversifier, Note, ProofGenerationKey, Rseed, keys::SpendValidatingKey, pedersen_hash,
     };
 
     use bellman::gadgets::test::*;
     use group::ff::Field;
-    use rand_core::{RngCore, SeedableRng};
+    use rand_core::{Rng, SeedableRng};
     use rand_xorshift::XorShiftRng;
 
     let mut rng = XorShiftRng::from_seed([
@@ -854,8 +859,13 @@ fn test_input_circuit_with_bls12_381_external_test_vectors() {
         }
 
         let commitment_randomness = jubjub::Fr::random(&mut rng);
-        let auth_path =
-            vec![Some((bls12_381::Scalar::random(&mut rng), rng.next_u32() % 2 != 0)); tree_depth];
+        let auth_path = vec![
+            Some((
+                bls12_381::Scalar::random(&mut rng),
+                !rng.next_u32().is_multiple_of(2),
+            ));
+            tree_depth
+        ];
         let ar = jubjub::Fr::random(&mut rng);
 
         {
@@ -966,11 +976,11 @@ fn test_input_circuit_with_bls12_381_external_test_vectors() {
 
 #[test]
 fn test_output_circuit_with_bls12_381() {
-    use crate::{keys::SpendValidatingKey, Diversifier, ProofGenerationKey, Rseed};
+    use crate::{Diversifier, ProofGenerationKey, Rseed, keys::SpendValidatingKey};
 
     use bellman::gadgets::test::*;
     use group::ff::Field;
-    use rand_core::{RngCore, SeedableRng};
+    use rand_core::{Rng, SeedableRng};
     use rand_xorshift::XorShiftRng;
 
     let mut rng = XorShiftRng::from_seed([

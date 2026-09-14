@@ -1,7 +1,7 @@
+use crate::once::OnceTable;
 use bitvec::{order::Lsb0, view::AsBits};
-use group::{ff::PrimeField, Curve};
+use group::{Curve, ff::PrimeField};
 use incrementalmerkletree::{Hashable, Level};
-use lazy_static::lazy_static;
 use subtle::CtOption;
 
 use alloc::vec::Vec;
@@ -9,7 +9,7 @@ use core::fmt;
 
 use super::{
     note::ExtractedNoteCommitment,
-    pedersen_hash::{pedersen_hash, Personalization},
+    pedersen_hash::{Personalization, pedersen_hash},
 };
 
 pub const NOTE_COMMITMENT_TREE_DEPTH: u8 = 32;
@@ -19,18 +19,21 @@ pub type IncrementalWitness =
     incrementalmerkletree::witness::IncrementalWitness<Node, NOTE_COMMITMENT_TREE_DEPTH>;
 pub type MerklePath = incrementalmerkletree::MerklePath<Node, NOTE_COMMITMENT_TREE_DEPTH>;
 
-lazy_static! {
-    static ref UNCOMMITTED_SAPLING: bls12_381::Scalar = bls12_381::Scalar::one();
-    static ref EMPTY_ROOTS: Vec<Node> = empty_roots();
+fn uncommitted_sapling() -> bls12_381::Scalar {
+    bls12_381::Scalar::one()
 }
 
-fn empty_roots() -> Vec<Node> {
-    let mut v = vec![Node::empty_leaf()];
-    for d in 0..NOTE_COMMITMENT_TREE_DEPTH {
-        let next = Node::combine(d.into(), &v[usize::from(d)], &v[usize::from(d)]);
-        v.push(next);
-    }
-    v
+static EMPTY_ROOTS: OnceTable<Vec<Node>> = OnceTable::new();
+
+fn empty_roots() -> &'static [Node] {
+    EMPTY_ROOTS.get_or_init(|| {
+        let mut v = vec![Node::empty_leaf()];
+        for d in 0..NOTE_COMMITMENT_TREE_DEPTH {
+            let next = Node::combine(d.into(), &v[usize::from(d)], &v[usize::from(d)]);
+            v.push(next);
+        }
+        v
+    })
 }
 
 /// Compute a parent node in the Sapling commitment tree given its two children.
@@ -155,7 +158,7 @@ impl Node {
 
 impl Hashable for Node {
     fn empty_leaf() -> Self {
-        Node(*UNCOMMITTED_SAPLING)
+        Node(uncommitted_sapling())
     }
 
     fn combine(level: Level, lhs: &Self, rhs: &Self) -> Self {
@@ -167,7 +170,7 @@ impl Hashable for Node {
     }
 
     fn empty_root(level: Level) -> Self {
-        EMPTY_ROOTS[<usize>::from(level)]
+        empty_roots()[<usize>::from(level)]
     }
 }
 
@@ -181,7 +184,10 @@ impl From<Node> for bls12_381::Scalar {
 pub(super) mod testing {
     use ff::Field;
     use proptest::prelude::*;
-    use rand::distributions::{Distribution, Standard};
+    use rand::{
+        Rng as RandRng,
+        distr::{Distribution, StandardUniform},
+    };
 
     use super::Node;
     use crate::note::testing::arb_cmu;
@@ -194,13 +200,13 @@ pub(super) mod testing {
 
     impl Node {
         /// Return a random fake `MerkleHashOrchard`.
-        pub fn random(rng: &mut impl RngCore) -> Self {
-            Standard.sample(rng)
+        pub fn random(rng: &mut impl RandRng) -> Self {
+            StandardUniform.sample(rng)
         }
     }
 
-    impl Distribution<Node> for Standard {
-        fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Node {
+    impl Distribution<Node> for StandardUniform {
+        fn sample<R: RandRng + ?Sized>(&self, rng: &mut R) -> Node {
             Node::from_scalar(bls12_381::Scalar::random(rng))
         }
     }

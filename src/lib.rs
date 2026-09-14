@@ -26,6 +26,7 @@ extern crate std;
 mod address;
 pub mod builder;
 pub mod bundle;
+mod once;
 
 #[cfg(feature = "circuit")]
 pub mod circuit;
@@ -38,6 +39,7 @@ pub mod pczt;
 pub mod pedersen_hash;
 #[cfg(feature = "circuit")]
 pub mod prover;
+mod rng_compat;
 mod spec;
 mod tree;
 pub mod util;
@@ -49,10 +51,10 @@ pub mod zip32;
 pub use address::PaymentAddress;
 pub use bundle::Bundle;
 pub use keys::{Diversifier, NullifierDerivingKey, ProofGenerationKey, SaplingIvk, ViewingKey};
-pub use note::{nullifier::Nullifier, Note, Rseed};
+pub use note::{Note, Rseed, nullifier::Nullifier};
 pub use tree::{
-    merkle_hash, Anchor, CommitmentTree, IncrementalWitness, MerklePath, Node,
-    NOTE_COMMITMENT_TREE_DEPTH,
+    Anchor, CommitmentTree, IncrementalWitness, MerklePath, NOTE_COMMITMENT_TREE_DEPTH, Node,
+    merkle_hash,
 };
 
 #[cfg(feature = "circuit")]

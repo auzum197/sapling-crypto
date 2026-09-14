@@ -10,11 +10,11 @@ use zip32::ChildIndex;
 
 use super::{Bundle, Output, Spend, Zip32Derivation};
 use crate::{
+    Anchor, MerklePath, Node, Nullifier, PaymentAddress, ProofGenerationKey, Rseed,
     bundle::GrothProofBytes,
     keys::{SpendAuthorizingKey, SpendValidatingKey},
     note::ExtractedNoteCommitment,
     value::{NoteValue, ValueCommitTrapdoor, ValueCommitment, ValueSum},
-    Anchor, MerklePath, Node, Nullifier, PaymentAddress, ProofGenerationKey, Rseed,
 };
 
 impl Bundle {

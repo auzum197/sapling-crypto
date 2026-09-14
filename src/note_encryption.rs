@@ -6,23 +6,23 @@ use alloc::vec::Vec;
 use blake2b_simd::{Hash as Blake2bHash, Params as Blake2bParams};
 use ff::PrimeField;
 use memuse::DynamicUsage;
-use rand_core::RngCore;
+use rand_core::Rng;
 
 use zcash_note_encryption::{
-    try_compact_note_decryption, try_note_decryption, try_output_recovery_with_ock,
-    try_output_recovery_with_ovk, BatchDomain, Domain, EphemeralKeyBytes, NoteEncryption,
-    NotePlaintextBytes, OutPlaintextBytes, OutgoingCipherKey, ShieldedOutput, COMPACT_NOTE_SIZE,
-    ENC_CIPHERTEXT_SIZE, NOTE_PLAINTEXT_SIZE, OUT_PLAINTEXT_SIZE,
+    BatchDomain, COMPACT_NOTE_SIZE, Domain, ENC_CIPHERTEXT_SIZE, EphemeralKeyBytes,
+    NOTE_PLAINTEXT_SIZE, NoteEncryption, NotePlaintextBytes, OUT_PLAINTEXT_SIZE, OutPlaintextBytes,
+    OutgoingCipherKey, ShieldedOutput, try_compact_note_decryption, try_note_decryption,
+    try_output_recovery_with_ock, try_output_recovery_with_ovk,
 };
 
 use crate::{
+    Diversifier, Note, PaymentAddress, Rseed,
     bundle::{GrothProofBytes, OutputDescription},
     keys::{
         DiversifiedTransmissionKey, EphemeralPublicKey, EphemeralSecretKey, OutgoingViewingKey,
         SharedSecret,
     },
     value::{NoteValue, ValueCommitment},
-    Diversifier, Note, PaymentAddress, Rseed,
 };
 
 use super::note::ExtractedNoteCommitment;
@@ -354,7 +354,7 @@ impl ShieldedOutput<SaplingDomain, COMPACT_NOTE_SIZE> for CompactOutputDescripti
 ///
 /// ```
 /// use ff::Field;
-/// use rand_core::OsRng;
+/// use rand::rng;
 /// use sapling_crypto::{
 ///     keys::OutgoingViewingKey,
 ///     note_encryption::{sapling_note_encryption, Zip212Enforcement},
@@ -363,7 +363,8 @@ impl ShieldedOutput<SaplingDomain, COMPACT_NOTE_SIZE> for CompactOutputDescripti
 ///     Diversifier, PaymentAddress, Rseed, SaplingIvk,
 /// };
 ///
-/// let mut rng = OsRng;
+/// let mut rng = rng();
+/// # let mut outgoing_rng = rand_core_06::OsRng;
 ///
 /// let ivk = SaplingIvk(jubjub::Scalar::random(&mut rng));
 /// let diversifier = Diversifier([0; 11]);
@@ -382,9 +383,9 @@ impl ShieldedOutput<SaplingDomain, COMPACT_NOTE_SIZE> for CompactOutputDescripti
 ///
 /// let mut enc = sapling_note_encryption(ovk, note, [0x37; 512], &mut rng);
 /// let encCiphertext = enc.encrypt_note_plaintext();
-/// let outCiphertext = enc.encrypt_outgoing_plaintext(&cv, &cmu, &mut rng);
+/// let outCiphertext = enc.encrypt_outgoing_plaintext(&cv, &cmu, &mut outgoing_rng);
 /// ```
-pub fn sapling_note_encryption<R: RngCore>(
+pub fn sapling_note_encryption<R: Rng>(
     ovk: Option<OutgoingViewingKey>,
     note: Note,
     memo: [u8; 512],
@@ -462,39 +463,38 @@ pub fn try_sapling_output_recovery(
 mod tests {
     use alloc::vec::Vec;
     use chacha20poly1305::{
-        aead::{AeadInPlace, KeyInit},
         ChaCha20Poly1305,
+        aead::{AeadInPlace, KeyInit},
     };
     use ff::{Field, PrimeField};
     use group::Group;
     use group::GroupEncoding;
-    use rand_core::OsRng;
-    use rand_core::{CryptoRng, RngCore};
+    use rand_core::{CryptoRng, Rng};
 
     use zcash_note_encryption::{
-        batch, EphemeralKeyBytes, NoteEncryption, OutgoingCipherKey, ENC_CIPHERTEXT_SIZE,
-        NOTE_PLAINTEXT_SIZE, OUT_CIPHERTEXT_SIZE, OUT_PLAINTEXT_SIZE,
+        ENC_CIPHERTEXT_SIZE, EphemeralKeyBytes, NOTE_PLAINTEXT_SIZE, NoteEncryption,
+        OUT_CIPHERTEXT_SIZE, OUT_PLAINTEXT_SIZE, OutgoingCipherKey, batch,
     };
 
     use super::{
-        prf_ock, sapling_note_encryption, try_sapling_compact_note_decryption,
-        try_sapling_note_decryption, try_sapling_output_recovery,
-        try_sapling_output_recovery_with_ock, CompactOutputDescription, SaplingDomain,
-        Zip212Enforcement,
+        CompactOutputDescription, SaplingDomain, Zip212Enforcement, prf_ock,
+        sapling_note_encryption, try_sapling_compact_note_decryption, try_sapling_note_decryption,
+        try_sapling_output_recovery, try_sapling_output_recovery_with_ock,
     };
 
     use crate::{
+        Diversifier, PaymentAddress, Rseed, SaplingIvk,
         bundle::{GrothProofBytes, OutputDescription},
         constants::GROTH_PROOF_SIZE,
         keys::{DiversifiedTransmissionKey, EphemeralSecretKey, OutgoingViewingKey},
         note::ExtractedNoteCommitment,
         note_encryption::PreparedIncomingViewingKey,
+        rng_compat::{OsRng, RngCore06},
         util::generate_random_rseed,
         value::{NoteValue, ValueCommitTrapdoor, ValueCommitment},
-        Diversifier, PaymentAddress, Rseed, SaplingIvk,
     };
 
-    fn random_enc_ciphertext<R: RngCore + CryptoRng>(
+    fn random_enc_ciphertext<R: Rng + CryptoRng>(
         zip212_enforcement: Zip212Enforcement,
         mut rng: &mut R,
     ) -> (
@@ -509,12 +509,14 @@ mod tests {
         let (ovk, ock, output) = random_enc_ciphertext_with(&ivk, zip212_enforcement, rng);
 
         assert!(try_sapling_note_decryption(&prepared_ivk, &output, zip212_enforcement).is_some());
-        assert!(try_sapling_compact_note_decryption(
-            &prepared_ivk,
-            &CompactOutputDescription::from(output.clone()),
-            zip212_enforcement,
-        )
-        .is_some());
+        assert!(
+            try_sapling_compact_note_decryption(
+                &prepared_ivk,
+                &CompactOutputDescription::from(output.clone()),
+                zip212_enforcement,
+            )
+            .is_some()
+        );
 
         let ovk_output_recovery = try_sapling_output_recovery(&ovk, &output, zip212_enforcement);
 
@@ -527,7 +529,7 @@ mod tests {
         (ovk, ock, prepared_ivk, output)
     }
 
-    fn random_enc_ciphertext_with<R: RngCore + CryptoRng>(
+    fn random_enc_ciphertext_with<R: Rng + CryptoRng>(
         ivk: &SaplingIvk,
         zip212_enforcement: Zip212Enforcement,
         mut rng: &mut R,
@@ -554,7 +556,7 @@ mod tests {
         let epk = ne.epk();
         let ock = prf_ock(&ovk, &cv, &cmu.to_bytes(), &epk.to_bytes());
 
-        let out_ciphertext = ne.encrypt_outgoing_plaintext(&cv, &cmu, &mut rng);
+        let out_ciphertext = ne.encrypt_outgoing_plaintext(&cv, &cmu, &mut RngCore06::new(rng));
         let output = OutputDescription::from_parts(
             cv,
             cmu,
@@ -1305,6 +1307,7 @@ mod tests {
 
         for zip212_enforcement in zip212_states {
             let (ovk, ock, _, mut output) = random_enc_ciphertext(zip212_enforcement, &mut rng);
+            let invalid_pk_d = jubjub::ExtendedPoint::random(&mut rng).to_bytes();
 
             *output.out_ciphertext_mut() = reencrypt_out_ciphertext(
                 &ovk,
@@ -1312,7 +1315,7 @@ mod tests {
                 output.cmu(),
                 output.ephemeral_key(),
                 output.out_ciphertext(),
-                |pt| pt[0..32].copy_from_slice(&jubjub::ExtendedPoint::random(rng).to_bytes()),
+                |pt| pt[0..32].copy_from_slice(&invalid_pk_d),
             );
             assert_eq!(
                 try_sapling_output_recovery(&ovk, &output, zip212_enforcement),
@@ -1330,25 +1333,21 @@ mod tests {
         let test_vectors = crate::test_vectors::note_encryption::make_test_vectors();
 
         macro_rules! read_cmu {
-            ($field:expr) => {{
-                ExtractedNoteCommitment::from_bytes($field[..].try_into().unwrap()).unwrap()
-            }};
+            ($field:expr_2021) => {{ ExtractedNoteCommitment::from_bytes($field[..].try_into().unwrap()).unwrap() }};
         }
 
         macro_rules! read_jubjub_scalar {
-            ($field:expr) => {{
-                jubjub::Fr::from_repr($field[..].try_into().unwrap()).unwrap()
-            }};
+            ($field:expr_2021) => {{ jubjub::Fr::from_repr($field[..].try_into().unwrap()).unwrap() }};
         }
 
         macro_rules! read_pk_d {
-            ($field:expr) => {
+            ($field:expr_2021) => {
                 DiversifiedTransmissionKey::from_bytes(&$field).unwrap()
             };
         }
 
         macro_rules! read_cv {
-            ($field:expr) => {
+            ($field:expr_2021) => {
                 ValueCommitment::from_bytes_not_small_order(&$field).unwrap()
             };
         }
@@ -1468,7 +1467,7 @@ mod tests {
 
             assert_eq!(ne.encrypt_note_plaintext().as_ref(), &tv.c_enc[..]);
             assert_eq!(
-                &ne.encrypt_outgoing_plaintext(&cv, &cmu, &mut OsRng)[..],
+                &ne.encrypt_outgoing_plaintext(&cv, &cmu, &mut RngCore06::new(&mut OsRng),)[..],
                 &tv.c_out[..]
             );
         }
@@ -1480,8 +1479,9 @@ mod tests {
         let zip212_enforcement = Zip212Enforcement::On;
 
         // Test batch trial-decryption with multiple IVKs and outputs.
-        let invalid_ivk = PreparedIncomingViewingKey::new(&SaplingIvk(jubjub::Fr::random(rng)));
-        let valid_ivk = SaplingIvk(jubjub::Fr::random(rng));
+        let invalid_ivk =
+            PreparedIncomingViewingKey::new(&SaplingIvk(jubjub::Fr::random(&mut rng)));
+        let valid_ivk = SaplingIvk(jubjub::Fr::random(&mut rng));
         let outputs: Vec<_> = (0..10)
             .map(|_| {
                 (

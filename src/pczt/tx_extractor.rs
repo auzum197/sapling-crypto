@@ -1,13 +1,13 @@
 use core::fmt;
 
-use rand::{CryptoRng, RngCore};
+use rand::{CryptoRng, Rng};
 
 use crate::{
+    Bundle,
     bundle::{
         Authorization, Authorized, EffectsOnly, GrothProofBytes, OutputDescription,
         SpendDescription,
     },
-    Bundle,
 };
 
 use super::{Output, Spend};
@@ -166,7 +166,7 @@ impl<V> crate::Bundle<Unbound, V> {
     /// Verifies the given sighash with every `spend_auth_sig`, and then binds the bundle.
     ///
     /// Returns `None` if the given sighash does not validate against every `spend_auth_sig`.
-    pub fn apply_binding_signature<R: RngCore + CryptoRng>(
+    pub fn apply_binding_signature<R: Rng + CryptoRng>(
         self,
         sighash: [u8; 32],
         rng: R,

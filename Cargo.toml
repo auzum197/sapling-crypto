@@ -1,121 +1,85 @@
 [package]
-name = "sapling-crypto"
-version = "0.7.0"
-authors = [
-    "Sean Bowe <sean@electriccoin.co>",
-    "Jack Grigg <jack@electriccoin.co>",
-    "Kris Nuttycombe <kris@electriccoin.co>",
-]
-edition = "2021"
-rust-version = "1.88"
-resolver = "3"
+name = "zakura-sapling-crypto"
 description = "Cryptographic library for Zcash Sapling"
-homepage = "https://github.com/zcash/sapling-crypto"
-repository = "https://github.com/zcash/sapling-crypto"
-license = "MIT OR Apache-2.0"
+keywords = ["cryptography", "sapling", "zero-knowledge", "zcash"]
+categories = ["cryptography::cryptocurrencies"]
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme.workspace = true
 
 [package.metadata.docs.rs]
-features = ["test-dependencies"]
+all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
+[lib]
+name = "sapling_crypto"
+
 [dependencies]
-ff = { version = "0.13", default-features = false }
-group = "0.13"
-
-bls12_381 = { version = "0.8", default-features = false, features = ["alloc"] }
-jubjub = { version = "0.10", default-features = false, features = ["alloc"] }
-redjubjub = { version = "0.8", default-features = false }
-zcash_spec = "0.2"
-
-# Boilerplate
-getset = "0.1"
-
-# No-std support
-corez = { version = "0.1.1", default-features = false, features = ["alloc"] }
-
-# Circuits
-bellman = { version = "0.14", default-features = false, features = ["groth16"], optional = true }
-
-# CSPRNG
-rand = { version = "0.8", default-features = false }
-rand_core = { version = "0.6", default-features = false }
-
-# Digests
+aes = "0.8"
+bellman = { workspace = true, features = ["groth16"], optional = true }
+bitvec = { version = "1", default-features = false }
 blake2b_simd = { version = "1", default-features = false }
 blake2s_simd = { version = "1", default-features = false }
-
-# Documentation
+bls12_381 = { workspace = true, features = ["alloc"] }
+corez = { version = "0.1.1", features = ["alloc"], default-features = false }
 document-features = { version = "0.2", optional = true }
-
-# Encodings
-hex = { version = "0.4", default-features = false, features = ["alloc"] }
-
-# Logging and metrics
+ff = { version = "0.14", default-features = false }
+fpe = { version = "0.6", features = ["alloc"], default-features = false }
+getset = "0.1"
+group = "0.14"
+hex = { version = "0.4", features = ["alloc"], default-features = false }
+incrementalmerkletree = { version = "0.8.1", features = ["legacy-api"], default-features = false }
+jubjub = { workspace = true, features = ["alloc"] }
 memuse = { version = "0.2.2", default-features = false }
-tracing = { version = "0.1", default-features = false }
-
-# Note Commitment Trees
-bitvec = { version = "1", default-features = false }
-incrementalmerkletree = { version = "0.8.1", default-features = false, features = ["legacy-api"] }
-
-# Note encryption
-zcash_note_encryption = { version = "0.4", features = ["pre-zip-212"] }
-
-# Secret management
-subtle = { version = "2.6", default-features = false }
-
-# Static constants
-lazy_static = "1"
-
-# Test dependencies
+once_cell = { version = "1", features = ["race", "alloc"], default-features = false }
 proptest = { version = ">=1.0.0, <1.7.0", optional = true }
-
-# ZIP 32
-aes = "0.8"
-fpe = { version = "0.6", default-features = false, features = ["alloc"] }
+rand = { version = "0.10", default-features = false }
+rand_core = { version = "0.10", default-features = false }
+rand_core_06 = { version = "0.6", default-features = false, package = "rand_core" }
+redjubjub = { workspace = true }
+subtle = { version = "2.6", default-features = false }
+tracing = { version = "0.1", default-features = false }
+zcash_note_encryption = { version = "0.4", features = ["pre-zip-212"] }
+zcash_spec = "0.2"
 zip32 = { version = "0.2", default-features = false }
-
 
 [dev-dependencies]
 chacha20poly1305 = "0.10"
 criterion = "0.5"
 incrementalmerkletree = { version = "0.8.1", features = ["legacy-api", "test-dependencies"] }
 proptest = ">=1.0.0, <1.7.0"
-rand_xorshift = "0.3"
+rand = { version = "0.10", features = ["thread_rng"], default-features = false }
+rand_xorshift = "0.5"
 
-[target.'cfg(unix)'.dev-dependencies]
-pprof = { version = "0.15", features = ["criterion", "flamegraph"] } # MSRV 1.74
+[target."cfg(unix)".dev-dependencies]
+pprof = { version = "0.15", features = ["criterion", "flamegraph"] }
 
 [features]
-default = ["multicore", "circuit"]
-std = [
-  "corez/std",
-  "dep:document-features",
-  "group/wnaf-memuse",
-  "redjubjub/std"
-]
-
-## Enables creation of Sapling proofs
 circuit = [
-  "dep:bellman",
-  "bls12_381/bits",
-  "bls12_381/groups",
-  "bls12_381/pairings",
-  "jubjub/bits",
-  "std"
+    "dep:bellman",
+    "bls12_381/bits",
+    "bls12_381/groups",
+    "bls12_381/pairings",
+    "jubjub/bits",
+    "std",
 ]
-
-## Enables multithreading support for creating proofs.
+default = ["multicore", "circuit"]
 multicore = ["bellman?/multicore"]
-
-### A temporary feature flag that exposes granular APIs needed by `zcashd`. These APIs
-### should not be relied upon and will be removed in a future release.
+std = [
+    "corez/std",
+    "dep:document-features",
+    "group/wnaf-memuse",
+    "redjubjub/std",
+]
 temporary-zcashd = []
-
-## Exposes APIs that are useful for testing, such as `proptest` strategies.
 test-dependencies = [
     "incrementalmerkletree/test-dependencies",
     "dep:proptest",
+    "rand/std_rng",
 ]
 
 [[bench]]

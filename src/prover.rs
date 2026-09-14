@@ -1,21 +1,21 @@
 //! Abstractions over the proving system and parameters.
 
-use bellman::groth16::{create_random_proof, Proof};
+use bellman::groth16::{Proof, create_random_proof};
 use bls12_381::Bls12;
-use rand_core::RngCore;
+use rand_core::Rng;
 
 use crate::{
+    MerklePath,
     bundle::GrothProofBytes,
     circuit,
     constants::GROTH_PROOF_SIZE,
     keys::EphemeralSecretKey,
     value::{NoteValue, ValueCommitTrapdoor},
-    MerklePath,
 };
 
 use super::{
-    circuit::{Output, OutputParameters, Spend, SpendParameters, ValueCommitmentOpening},
     Diversifier, Note, PaymentAddress, ProofGenerationKey, Rseed,
+    circuit::{Output, OutputParameters, Spend, SpendParameters, ValueCommitmentOpening},
 };
 
 /// Interface for creating Sapling Spend proofs.
@@ -41,7 +41,7 @@ pub trait SpendProver {
     /// Create the proof for a Sapling [`SpendDescription`].
     ///
     /// [`SpendDescription`]: crate::bundle::SpendDescription
-    fn create_proof<R: RngCore>(&self, circuit: circuit::Spend, rng: &mut R) -> Self::Proof;
+    fn create_proof<R: Rng>(&self, circuit: circuit::Spend, rng: &mut R) -> Self::Proof;
 
     /// Encodes the given Sapling [`SpendDescription`] proof, erasing its type.
     ///
@@ -68,7 +68,7 @@ pub trait OutputProver {
     /// Create the proof for a Sapling [`OutputDescription`].
     ///
     /// [`OutputDescription`]: crate::bundle::OutputDescription
-    fn create_proof<R: RngCore>(&self, circuit: circuit::Output, rng: &mut R) -> Self::Proof;
+    fn create_proof<R: Rng>(&self, circuit: circuit::Output, rng: &mut R) -> Self::Proof;
 
     /// Encodes the given Sapling [`OutputDescription`] proof, erasing its type.
     ///
@@ -121,7 +121,7 @@ impl SpendProver for SpendParameters {
         })
     }
 
-    fn create_proof<R: RngCore>(&self, circuit: Spend, rng: &mut R) -> Self::Proof {
+    fn create_proof<R: Rng>(&self, circuit: Spend, rng: &mut R) -> Self::Proof {
         create_random_proof(circuit, &self.0, rng).expect("proving should not fail")
     }
 
@@ -159,7 +159,7 @@ impl OutputProver for OutputParameters {
         }
     }
 
-    fn create_proof<R: RngCore>(&self, circuit: Output, rng: &mut R) -> Self::Proof {
+    fn create_proof<R: Rng>(&self, circuit: Output, rng: &mut R) -> Self::Proof {
         create_random_proof(circuit, &self.0, rng).expect("proving should not fail")
     }
 
@@ -179,12 +179,12 @@ pub mod mock {
 
     use super::{OutputProver, SpendProver};
     use crate::{
+        Diversifier, MerklePath, PaymentAddress, ProofGenerationKey, Rseed,
         bundle::GrothProofBytes,
         circuit::{self, ValueCommitmentOpening},
         constants::GROTH_PROOF_SIZE,
         keys::EphemeralSecretKey,
         value::{NoteValue, ValueCommitTrapdoor},
-        Diversifier, MerklePath, PaymentAddress, ProofGenerationKey, Rseed,
     };
 
     pub struct MockSpendProver;
@@ -220,7 +220,7 @@ pub mod mock {
             })
         }
 
-        fn create_proof<R: rand_core::RngCore>(
+        fn create_proof<R: rand_core::Rng>(
             &self,
             _circuit: circuit::Spend,
             _rng: &mut R,
@@ -256,7 +256,7 @@ pub mod mock {
             }
         }
 
-        fn create_proof<R: rand_core::RngCore>(
+        fn create_proof<R: rand_core::Rng>(
             &self,
             _circuit: circuit::Output,
             _rng: &mut R,

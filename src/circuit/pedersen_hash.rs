@@ -8,7 +8,7 @@ use bellman::gadgets::boolean::Boolean;
 use bellman::gadgets::lookup::*;
 use bellman::{ConstraintSystem, SynthesisError};
 
-use super::constants::PEDERSEN_CIRCUIT_GENERATORS;
+use super::constants::pedersen_circuit_generators;
 
 fn get_constant_bools(person: &Personalization) -> Vec<Boolean> {
     person
@@ -31,7 +31,7 @@ where
 
     let mut edwards_result = None;
     let mut bits = personalization.iter().chain(bits.iter()).peekable();
-    let mut segment_generators = PEDERSEN_CIRCUIT_GENERATORS.iter();
+    let mut segment_generators = pedersen_circuit_generators().iter();
     let boolean_false = Boolean::constant(false);
 
     let mut segment_i = 0;
@@ -111,8 +111,8 @@ mod test {
 
     use bellman::gadgets::boolean::{AllocatedBit, Boolean};
     use bellman::gadgets::test::*;
-    use group::{ff::PrimeField, Curve};
-    use rand_core::{RngCore, SeedableRng};
+    use group::{Curve, ff::PrimeField};
+    use rand_core::{Rng, SeedableRng};
     use rand_xorshift::XorShiftRng;
 
     /// Predict the number of constraints of a Pedersen hash
@@ -162,7 +162,9 @@ mod test {
         {
             let mut cs = TestConstraintSystem::new();
 
-            let input: Vec<bool> = (0..n_bits).map(|_| rng.next_u32() % 2 != 0).collect();
+            let input: Vec<bool> = (0..n_bits)
+                .map(|_| !rng.next_u32().is_multiple_of(2))
+                .collect();
 
             let input_bools: Vec<Boolean> = input
                 .iter()
@@ -206,7 +208,9 @@ mod test {
 
         for length in 0..751 {
             for _ in 0..5 {
-                let input: Vec<bool> = (0..length).map(|_| rng.next_u32() % 2 != 0).collect();
+                let input: Vec<bool> = (0..length)
+                    .map(|_| !rng.next_u32().is_multiple_of(2))
+                    .collect();
 
                 let mut cs = TestConstraintSystem::new();
 
@@ -232,7 +236,7 @@ mod test {
 
                 let expected = jubjub::ExtendedPoint::from(pedersen_hash::pedersen_hash(
                     Personalization::MerkleTree(1),
-                    input.clone().into_iter(),
+                    input.clone(),
                 ))
                 .to_affine();
 
@@ -242,7 +246,7 @@ mod test {
                 // Test against the output of a different personalization
                 let unexpected = jubjub::ExtendedPoint::from(pedersen_hash::pedersen_hash(
                     Personalization::MerkleTree(0),
-                    input.into_iter(),
+                    input,
                 ))
                 .to_affine();
 
@@ -268,7 +272,9 @@ mod test {
             "2112827187110048608327330788910224944044097981650120385961435904443901436107",
         ];
         for length in 300..302 {
-            let input: Vec<bool> = (0..length).map(|_| rng.next_u32() % 2 != 0).collect();
+            let input: Vec<bool> = (0..length)
+                .map(|_| !rng.next_u32().is_multiple_of(2))
+                .collect();
 
             let mut cs = TestConstraintSystem::new();
 

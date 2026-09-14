@@ -5,13 +5,13 @@ use bellman::groth16::*;
 use bls12_381::Bls12;
 use criterion::Criterion;
 use group::ff::Field;
-use rand::{Rng, RngCore, SeedableRng};
+use rand::{Rng, RngExt, SeedableRng};
 use rand_xorshift::XorShiftRng;
 use sapling_crypto::{
+    Diversifier,
     circuit::{Spend, ValueCommitmentOpening},
     keys::ExpandedSpendingKey,
     value::NoteValue,
-    Diversifier,
 };
 
 #[cfg(unix)]
@@ -45,7 +45,7 @@ fn criterion_benchmark(c: &mut Criterion) {
             randomness: jubjub::Fr::random(&mut rng),
         };
 
-        let sk: [u8; 32] = rng.gen();
+        let sk: [u8; 32] = rng.random();
         let expsk = ExpandedSpendingKey::from_spending_key(&sk);
 
         let proof_generation_key = expsk.proof_generation_key();
@@ -65,8 +65,13 @@ fn criterion_benchmark(c: &mut Criterion) {
         };
 
         let commitment_randomness = jubjub::Fr::random(&mut rng);
-        let auth_path =
-            vec![Some((bls12_381::Scalar::random(&mut rng), rng.next_u32() % 2 != 0)); TREE_DEPTH];
+        let auth_path = vec![
+            Some((
+                bls12_381::Scalar::random(&mut rng),
+                !rng.next_u32().is_multiple_of(2),
+            ));
+            TREE_DEPTH
+        ];
         let ar = jubjub::Fr::random(&mut rng);
         let anchor = bls12_381::Scalar::random(&mut rng);
 
